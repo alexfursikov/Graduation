@@ -18,7 +18,9 @@
                 <TranslateTransform/>
             </TransformGroup>
         </Grid.RenderTransform>
-        <Border Background="#FFDEDEDE" />
+        <Border Background="#FFDEDEDE" >
+
+        </Border>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
             <TextBlock Margin="10,0,0,0" Width="120" Text="Дальномер : " VerticalAlignment="Center" FontSize="22"/>
             <ComboBox Style="{StaticResource MaterialDesignComboBox}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"
@@ -35,7 +37,7 @@
             <Ellipse Margin="10" x:Name="Ellipse" Fill="Red" Width="15" Height="15" />
         </StackPanel>
         <StackPanel Margin="0,40" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-        <TextBlock Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="Вилка"></TextBlock>
+            <TextBlock Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="22" Text="Вилка"></TextBlock>
             <!--<TextBox Name="ForkTextBox" Background="Chartreuse" Height="50" Width="50" TextChanged="ForkTextBox_OnTextChanged" />-->
             <ComboBox Margin="50,0,0,0"  Style="{StaticResource MaterialDesignComboBox}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"
                       MinWidth="200" MaxWidth="200" FontSize="22" ItemsSource="{Binding Devices}"
@@ -49,7 +51,7 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
         </StackPanel>
-        <StackPanel Margin="0,80,0,0" Orientation="Horizontal" VerticalAlignment="Top">
+        <DockPanel Margin="0,80,0,0" VerticalAlignment="Top">
             <TextBlock Width="110" Margin="10,10,0,0" Text="Режим : " VerticalAlignment="Center" FontSize="22"/>
             <ComboBox Margin="23,10,0,0" Width="Auto"
                       FontSize="22" ItemsSource="{Binding Modes}" SelectedItem="{Binding Mode}"
@@ -62,7 +64,13 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-        </StackPanel>
+            <DockPanel HorizontalAlignment="Right">
+                <Label DockPanel.Dock="Top"  Content="Количество диаметров"/>
+                <Label DockPanel.Dock="Left" Content="1"/>
+                <Label DockPanel.Dock="Right" Content="2"/>
+                <ToggleButton Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+            </DockPanel>
+        </DockPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
             <Button Content="Сохранить в CSV" Width="Auto" Height="Auto" Margin="0,10,10,10"
                     Click="ButtonBase_OnClick" />
@@ -70,7 +78,9 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
             <Button Content="Открыть из CSV" Width="Auto" Height="Auto" Margin="0,40,10,10"
                     Click="ButtonBase_OnClick" />
+
         </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
         <DataGrid AutoGenerateColumns="False" x:Name="DataGrid" CanUserAddRows="True" Margin="10,140,10,10" 
                   ItemsSource="{Binding Measurements}" CanUserDeleteRows="True" IsReadOnly="True">

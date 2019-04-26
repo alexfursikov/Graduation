@@ -33,7 +33,7 @@ namespace GraduationProject.Views
         private static NetworkStream ForkStream { get; set; }
         private static DispatcherTimer Timer { get; set; }
 
-        private bool isHasDiameterTwo;
+        private static bool isHasDiameterTwo = false;
 
         private DataModel dataModel;
 
@@ -51,7 +51,7 @@ namespace GraduationProject.Views
         private void Device_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             BtDevice = (sender as ComboBox)?.SelectedItem as BluetoothDeviceInfo;
-            ParseStringToObject("");
+            ParseStringToObject("");// убрать метод и комментарии когда будет прибор
             //if (BtDevice != null)
             //{
             //    if (BluetoothSecurity.PairRequest(BtDevice.DeviceAddress, "1111"))
@@ -86,7 +86,7 @@ namespace GraduationProject.Views
         private void Fork_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ForkBtDevice = (sender as ComboBox)?.SelectedItem as BluetoothDeviceInfo;
-            ParseForkStringToObject("");
+            ParseForkStringToObject("");// убрать метод и комментарии когда будет прибор
             //if (ForkBtDevice != null)
             //{
             //    if (BluetoothSecurity.PairRequest(ForkBtDevice.DeviceAddress, "1234"))
@@ -118,8 +118,8 @@ namespace GraduationProject.Views
                     Stream = BluetoothClient.GetStream();
                     if (Stream.CanRead)
                     {
-                        byte[] myReadBuffer = new byte[1024];
-                        string myCompleteMessage = "";
+                        var myReadBuffer = new byte[1024];
+                        var myCompleteMessage = "";
                         do
                         {
                             Thread.Sleep(1000);
@@ -184,19 +184,36 @@ namespace GraduationProject.Views
                 //var indexMl = Array.IndexOf(arrayData, "ML") + 1;
                 //var indexHt = Array.IndexOf(arrayData, "HT") + 1;
                 //var indexD1 = indexD == 0 ? 0 : indexD + 2;
-                if (dataModel == null)
+                if(dataModel == null)
                 {
-                    dataModel = new DataModel();
+                    dataModel = new DataModel
+                    {
+                        Id = Interlocked.Increment(ref CurrentContext.GlobalId)
+                    };
                 }
-
-                dataModel.HorizontalDistance = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexHv]);
-                dataModel.Azimuth = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexM]);
-                dataModel.Bias = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexD]);
-                dataModel.SlopeDistance = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexD1]);
-                dataModel.Hight = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexHt]);
-                dataModel.NotAvailableDinstance = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexMl]);
-                ViewModel.Measurements.Add(dataModel);
-                CurrentContext.DataList.Add(dataModel);
+                if (dataModel.HorizontalDistance == null)
+                {
+                    dataModel.HorizontalDistance = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexHv]);
+                    dataModel.Azimuth = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexM]);
+                    dataModel.Bias = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexD]);
+                    dataModel.SlopeDistance = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexD1]);
+                    dataModel.Hight = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexHt]);
+                    dataModel.NotAvailableDinstance = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexMl]);
+                }
+                if (dataModel.DiameterTwo != 0 && isHasDiameterTwo)
+                {
+                    ViewModel.Measurements.Add(dataModel);
+                    CurrentContext.DataList.Add(dataModel);
+                    dataModel = null;
+                    return;
+                }
+                if(!isHasDiameterTwo && dataModel.Species != null)
+                {
+                    ViewModel.Measurements.Add(dataModel);
+                    CurrentContext.DataList.Add(dataModel);
+                    dataModel = null;
+                    return;
+                }
             }
         }
 
@@ -212,12 +229,54 @@ namespace GraduationProject.Views
 
             if (dataModel == null)
             {
-                dataModel = new DataModel();
+                dataModel = new DataModel
+                {
+                    Id = Interlocked.Increment(ref CurrentContext.GlobalId)
+                };
             }
+            if(dataModel.HorizontalDistance != null)
+            {
+                if (!isHasDiameterTwo)
+                {
+                    dataModel.Species = species;
+                    dataModel.DiameterOne = dia;
+                    ViewModel.Measurements.Add(dataModel);
+                    CurrentContext.DataList.Add(dataModel);
+                    dataModel = null;
+                    return;
+                }
+                if (isHasDiameterTwo && dataModel.DiameterOne != 0)
+                {
+                    dataModel.DiameterTwo = dia;
+                    ViewModel.Measurements.Add(dataModel);
+                    CurrentContext.DataList.Add(dataModel);
+                    dataModel = null;
+                    return;
+                }
+                if (isHasDiameterTwo && dataModel.DiameterOne == 0)
+                {
+                    dataModel.Species = species;
+                    dataModel.DiameterOne = dia;
 
-            dataModel.Id = Interlocked.Increment(ref CurrentContext.GlobalId);
-            dataModel.Species = species;
-            dataModel.DiameterOne = dia;
+                }
+            }
+            else
+            {
+                if (!isHasDiameterTwo)
+                {
+                    dataModel.Species = species;
+                    dataModel.DiameterOne = dia;
+                }
+                if (isHasDiameterTwo && dataModel.DiameterOne != 0)
+                {
+                    dataModel.DiameterTwo = dia;
+                }
+                if (isHasDiameterTwo && dataModel.DiameterOne == 0)
+                {
+                    dataModel.Species = species;
+                    dataModel.DiameterOne = dia;
+                }
+            }
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -286,6 +345,16 @@ namespace GraduationProject.Views
             }
             ViewModel.BluetoothDeviceInfo = null;
             return false;
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            isHasDiameterTwo = true;
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            isHasDiameterTwo = false;
         }
     }
 }

@@ -65,6 +65,17 @@ namespace GraduationProject.ViewModels
             }
         }
 
+        private bool _isHasDiameterTwo;
+        public bool IsHasDiameterTwo
+        {
+            get => _isHasDiameterTwo;
+            set
+            {
+                _isHasDiameterTwo = value;
+                OnPropertyChanged("IsHasDiameterTwo");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {
