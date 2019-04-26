@@ -36,7 +36,8 @@ namespace GraduationProject
             string result = "";
             foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
             {
-                if (nic.OperationalStatus == OperationalStatus.Down && (!nic.Description.Contains("Virtual") && !nic.Description.Contains("Pseudo") && !nic.Description.Contains("Wireless")))
+                if (nic.OperationalStatus == OperationalStatus.Down && !nic.Description.Contains("Virtual") &&
+                    !nic.Description.Contains("Pseudo") && !nic.Description.Contains("Wireless"))
                 {
                     if (nic.GetPhysicalAddress().ToString() != "")
                     {

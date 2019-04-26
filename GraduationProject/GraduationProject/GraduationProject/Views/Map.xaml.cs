@@ -8,9 +8,6 @@ using GMap.NET.WindowsPresentation;
 
 namespace GraduationProject.Views
 {
-    /// <summary>
-    /// Interaction logic for Map.xaml
-    /// </summary>
     public partial class Map
     {
         public Map()
@@ -22,6 +19,7 @@ namespace GraduationProject.Views
                 while (CurrentContext.Watcher.Status.ToString() != "Ready")
                 {
                 }
+
                 CurrentContext.LocationMessage();
             }
             else

@@ -26,17 +26,16 @@ namespace GraduationProject.Views
     {
         private static BluetoothEndPoint LocalEndpoint { get; set; }
         private static BluetoothClient BluetoothClient { get; set; }
-
         private static BluetoothClient BluetoothForkClient { get; set; }
         private static BluetoothDeviceInfo BtDevice { get; set; }
         private static BluetoothDeviceInfo ForkBtDevice { get; set; }
         private static NetworkStream Stream { get; set; }
         private static NetworkStream ForkStream { get; set; }
         private static DispatcherTimer Timer { get; set; }
-        private string FokerString = "";
+
         private bool isHasDiameterTwo;
 
-        private DataModel dataModel = new DataModel();
+        private DataModel dataModel;
 
         public TestMeasurement()
         {
@@ -47,32 +46,6 @@ namespace GraduationProject.Views
 
         private void Mode_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-        }
-
-        private void Fork_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ForkBtDevice = (sender as ComboBox)?.SelectedItem as BluetoothDeviceInfo;
-
-            if (ForkBtDevice != null)
-            {
-                if (BluetoothSecurity.PairRequest(ForkBtDevice.DeviceAddress, "1234"))
-                {
-                    if (ForkBtDevice.Authenticated)
-                    {
-                        ViewModel.ForkDeviceInfo = ForkBtDevice;
-
-                        if (ViewModel.BluetoothDeviceInfo != null)
-                        {
-                            Ellipse.Fill = Brushes.DarkGreen;
-                        }
-
-                        BluetoothForkClient.SetPin("1234");
-                        BluetoothForkClient.BeginConnect(ForkBtDevice.DeviceAddress, BluetoothService.SerialPort,
-                            ConnectToFork,
-                            ForkBtDevice);
-                    }
-                }
-            }
         }
 
         private void Device_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -106,6 +79,32 @@ namespace GraduationProject.Views
             //    {
             //        ViewModel.BluetoothDeviceInfo = null;
             //        MessageBox.Show("Сопряжение с устройством не установлено.");
+            //    }
+            //}
+        }
+
+        private void Fork_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ForkBtDevice = (sender as ComboBox)?.SelectedItem as BluetoothDeviceInfo;
+            ParseForkStringToObject("");
+            //if (ForkBtDevice != null)
+            //{
+            //    if (BluetoothSecurity.PairRequest(ForkBtDevice.DeviceAddress, "1234"))
+            //    {
+            //        if (ForkBtDevice.Authenticated)
+            //        {
+            //            ViewModel.ForkDeviceInfo = ForkBtDevice;
+
+            //            if (ViewModel.BluetoothDeviceInfo != null)
+            //            {
+            //                Ellipse.Fill = Brushes.DarkGreen;
+            //            }
+
+            //            BluetoothForkClient.SetPin("1234");
+            //            BluetoothForkClient.BeginConnect(ForkBtDevice.DeviceAddress, BluetoothService.SerialPort,
+            //                ConnectToFork,
+            //                ForkBtDevice);
+            //        }
             //    }
             //}
         }
@@ -185,12 +184,17 @@ namespace GraduationProject.Views
                 //var indexMl = Array.IndexOf(arrayData, "ML") + 1;
                 //var indexHt = Array.IndexOf(arrayData, "HT") + 1;
                 //var indexD1 = indexD == 0 ? 0 : indexD + 2;
-                dataModel.HorizontalDistance = 5;// == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexHv]);
-                dataModel.Azimuth = 5;// == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexM]);
-                dataModel.Bias = 5;// == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexD]);
-                dataModel.SlopeDistance = 5;// == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexD1]);
-                dataModel.Hight = 5;// == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexHt]);
-                dataModel.NotAvailableDinstance = 5;// == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexMl]);
+                if (dataModel == null)
+                {
+                    dataModel = new DataModel();
+                }
+
+                dataModel.HorizontalDistance = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexHv]);
+                dataModel.Azimuth = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexM]);
+                dataModel.Bias = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexD]);
+                dataModel.SlopeDistance = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexD1]);
+                dataModel.Hight = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexHt]);
+                dataModel.NotAvailableDinstance = 5; // == 0 ? null : CurrentContext.ToDoubleParse(arrayData[indexMl]);
                 ViewModel.Measurements.Add(dataModel);
                 CurrentContext.DataList.Add(dataModel);
             }
@@ -200,11 +204,16 @@ namespace GraduationProject.Views
         {
             SystemSounds.Beep.Play();
 
-            string[] temp = message.Split(new[] { ',' });
+            //string[] temp = message.Split(new[] { ',' });
             string species;
             int dia;
-            species = temp[3];
-            dia = int.Parse(temp[7]);
+            species = "Bereza";//temp[3];
+            dia = int.Parse("150"/*temp[7]*/);
+
+            if (dataModel == null)
+            {
+                dataModel = new DataModel();
+            }
 
             dataModel.Id = Interlocked.Increment(ref CurrentContext.GlobalId);
             dataModel.Species = species;
@@ -250,7 +259,10 @@ namespace GraduationProject.Views
         {
             //await Task.Run(() => CurrentContext.UpdateDevices());
             ViewModel.Devices = new ObservableCollection<BluetoothDeviceInfo>(CurrentContext.Devices);
-            if (!IsConnectToDevice(BtDevice)) Ellipse.Fill = Brushes.Red;
+            if (!IsConnectToDevice(BtDevice))
+            {
+                Ellipse.Fill = Brushes.Red;
+            }
         }
 
         private void ButtonDeleteRow_OnClick(object sender, RoutedEventArgs e)

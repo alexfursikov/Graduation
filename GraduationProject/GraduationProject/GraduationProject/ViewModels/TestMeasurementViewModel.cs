@@ -13,7 +13,7 @@ namespace GraduationProject.ViewModels
         private ObservableCollection<BluetoothDeviceInfo> _devices;
         public ObservableCollection<BluetoothDeviceInfo> Devices
         {
-            get { return _devices; }
+            get => _devices;
             set
             {
                 _devices = value;
@@ -24,7 +24,7 @@ namespace GraduationProject.ViewModels
         private ObservableCollection<DataModel> _measurements;
         public ObservableCollection<DataModel> Measurements
         {
-            get { return _measurements; }
+            get => _measurements;
             set
             {
                 _measurements = value;
@@ -35,7 +35,7 @@ namespace GraduationProject.ViewModels
         private BluetoothDeviceInfo _bluetoothDeviceInfo;
         public BluetoothDeviceInfo BluetoothDeviceInfo
         {
-            get { return _bluetoothDeviceInfo; }
+            get => _bluetoothDeviceInfo;
             set
             {
                 _bluetoothDeviceInfo = value;
@@ -46,7 +46,7 @@ namespace GraduationProject.ViewModels
         private BluetoothDeviceInfo _forkDeviceInfo;
         public BluetoothDeviceInfo ForkDeviceInfo
         {
-            get { return _forkDeviceInfo; }
+            get => _forkDeviceInfo;
             set
             {
                 _forkDeviceInfo = value;
@@ -57,7 +57,7 @@ namespace GraduationProject.ViewModels
         private string _mode;
         public string Mode
         {
-            get { return _mode; }
+            get => _mode;
             set
             {
                 _mode = value;
