@@ -1,8 +1,8 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
-using GraduationProject.Models;
 using InTheHand.Net.Sockets;
+using GraduationProject.Models;
 
 namespace GraduationProject.ViewModels
 {
@@ -62,17 +62,6 @@ namespace GraduationProject.ViewModels
             {
                 _mode = value;
                 OnPropertyChanged("Mode");
-            }
-        }
-
-        private bool _isHasDiameterTwo;
-        public bool IsHasDiameterTwo
-        {
-            get => _isHasDiameterTwo;
-            set
-            {
-                _isHasDiameterTwo = value;
-                OnPropertyChanged("IsHasDiameterTwo");
             }
         }
 

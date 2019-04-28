@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Device.Location;
-using System.Net.NetworkInformation;
-using GraduationProject.Models;
-using InTheHand.Net.Sockets;
+﻿using System.Device.Location;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
+using InTheHand.Net.Sockets;
+using GraduationProject.Models;
 
 namespace GraduationProject
 {
@@ -20,7 +20,6 @@ namespace GraduationProject
 
             var lat = whereat.Latitude.ToString("0.000000");
             var lon = whereat.Longitude.ToString("0.000000");
-            //MessageBox.Show($"Lat: {lat}\nLon: {lon}");
         }
 
         public static async Task UpdateDevices()
@@ -32,8 +31,9 @@ namespace GraduationProject
 
         public static string GetMacAddress()
         {
-            string mac = "";
-            string result = "";
+            var mac = "";
+            var result = "";
+
             foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
             {
                 if (nic.OperationalStatus == OperationalStatus.Down && !nic.Description.Contains("Virtual") &&
@@ -45,25 +45,22 @@ namespace GraduationProject
                     }
                 }
             }
-            for (int i = 0; i < mac.Length; i++)
+            for (var i = 0; i < mac.Length; i++)
             {
                 result += mac[i];
+
                 if (i % 2 != 0 && mac.Length - 1 != i)
                 {
                     result += ":";
                 }
             }
+
             return result;
         }
 
         public static double? ToDoubleParse(string variable)
         {
-            double result;
-            if (double.TryParse(variable, out result))
-            {
-                return result;
-            }
-            return null;
+            return double.TryParse(variable, out var result) ? result : (double?)null;
         }
     }
 }

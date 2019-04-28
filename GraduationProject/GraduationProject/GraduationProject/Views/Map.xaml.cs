@@ -14,6 +14,7 @@ namespace GraduationProject.Views
         {
             InitializeComponent();
             CurrentContext.Watcher.Start();
+
             if (CurrentContext.Watcher.TryStart(false, TimeSpan.FromSeconds(3)))
             {
                 while (CurrentContext.Watcher.Status.ToString() != "Ready")

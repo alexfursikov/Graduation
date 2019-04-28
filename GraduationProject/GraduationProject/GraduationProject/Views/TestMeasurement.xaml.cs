@@ -234,39 +234,29 @@ namespace GraduationProject.Views
 
             if (_dataModel.HorizontalDistance != null)
             {
-                if (!_isHasDiameterTwo)
-                {
-                    _dataModel.Species = species;
-                    _dataModel.DiameterOne = dia;
-                    ViewModel.Measurements.Add(_dataModel);
-                    CurrentContext.DataList.Add(_dataModel);
-                    _dataModel = null;
-
-                    return;
-                }
-                else if (_isHasDiameterTwo && _dataModel.DiameterOne != 0)
+                if (_isHasDiameterTwo && _dataModel.DiameterOne != 0)
                 {
                     _dataModel.DiameterTwo = dia;
                     ViewModel.Measurements.Add(_dataModel);
                     CurrentContext.DataList.Add(_dataModel);
                     _dataModel = null;
-
-                    return;
                 }
                 else
                 {
                     _dataModel.Species = species;
                     _dataModel.DiameterOne = dia;
+
+                    if (!_isHasDiameterTwo)
+                    {
+                        ViewModel.Measurements.Add(_dataModel);
+                        CurrentContext.DataList.Add(_dataModel);
+                        _dataModel = null;
+                    }
                 }
             }
             else
             {
-                if (!_isHasDiameterTwo)
-                {
-                    _dataModel.Species = species;
-                    _dataModel.DiameterOne = dia;
-                }
-                else if (_isHasDiameterTwo && _dataModel.DiameterOne != 0)
+                if (_isHasDiameterTwo && _dataModel.DiameterOne != 0)
                 {
                     _dataModel.DiameterTwo = dia;
                 }
@@ -282,6 +272,7 @@ namespace GraduationProject.Views
         {
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("ID,HV,Meter,Fut,D,D1,F,ML,HT,ControlSumm");
+
             foreach (var item in ViewModel.Measurements)
             {
                 stringBuilder.AppendLine(item.ToString());
@@ -317,6 +308,7 @@ namespace GraduationProject.Views
         {
             //await Task.Run(() => CurrentContext.UpdateDevices());
             ViewModel.Devices = new ObservableCollection<BluetoothDeviceInfo>(CurrentContext.Devices);
+
             if (!IsConnectToDevice(BtDevice))
             {
                 Ellipse.Fill = Brushes.Red;
@@ -327,6 +319,7 @@ namespace GraduationProject.Views
         {
             var measurement = DataGrid.SelectedItem as DataModel;
             var maxId = CurrentContext.DataList.Max(x => x.Id);
+
             if (maxId == measurement?.Id)
             {
                 CurrentContext.GlobalId = maxId - 1;
@@ -343,6 +336,7 @@ namespace GraduationProject.Views
                 return true;
             }
             ViewModel.BluetoothDeviceInfo = null;
+
             return false;
         }
 
